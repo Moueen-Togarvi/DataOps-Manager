@@ -28,6 +28,17 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .material-symbols-outlined { font-size: 20px; }
+    .modal-overlay { display: none !important; }
+    .modal-overlay.active { display: flex !important; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    .badge-info { background: #dbeafe; color: #1e40af; }
+    .badge-neutral { background: #f1f5f9; color: #475569; }
   </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
@@ -47,6 +58,10 @@
         <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="dashboard.html">
           <span class="material-symbols-outlined">home</span>
           <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="data-entry.html">
+          <span class="material-symbols-outlined">edit_document</span>
+          <span class="text-sm font-medium">Data Entry</span>
         </a>
         <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary transition-colors" href="records.html">
           <span class="material-symbols-outlined">inventory_2</span>
@@ -103,10 +118,10 @@
             <span class="material-symbols-outlined">download</span>
             Export
           </button>
-          <button class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90" id="addRecordBtn">
+          <a href="data-entry.html" class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90" id="addRecordBtn">
             <span class="material-symbols-outlined">add</span>
             Add Record
-          </button>
+          </a>
         </div>
       </header>
 

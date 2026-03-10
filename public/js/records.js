@@ -77,24 +77,50 @@ async function loadCategories() {
     if (response.success) {
       categories = response.data;
 
-      // Populate dropdowns
-      const selects = ['categoryFilter', 'category'];
-      selects.forEach((id) => {
-        const select = document.getElementById(id);
-        if (select) {
-          const currentValue = select.value;
-          select.innerHTML =
-            '<option value="">Select Category</option>' +
-            categories
-              .filter((c) => c.active)
-              .map((c) => `<option value="${c._id}">${c.name}</option>`)
-              .join('');
-          select.value = currentValue;
-        }
-      });
+      // Populate filter dropdown
+      const select = document.getElementById('categoryFilter');
+      if (select) {
+        const currentValue = select.value;
+        select.innerHTML =
+          '<option value="">Select Category</option>' +
+          categories
+            .filter((c) => c.active)
+            .map((c) => `<option value="${c._id}">${c.name}</option>`)
+            .join('');
+        select.value = currentValue;
+      }
     }
   } catch (error) {
     handleApiError(error, 'Failed to load categories');
+  }
+}
+
+/**
+ * Update modal category dropdown based on department
+ */
+function updateCategoryDropdown(departmentId, selectedCategoryId = '') {
+  const categorySelect = document.getElementById('category');
+  if (!categorySelect) return;
+
+  categorySelect.innerHTML = '<option value="">Select Category</option>';
+  
+  if (!departmentId) {
+    categorySelect.disabled = true;
+    return;
+  }
+  
+  categorySelect.disabled = false;
+
+  const deptCategories = categories.filter(c => 
+    c.active && (c.department === departmentId || c.department?._id === departmentId || !c.department)
+  );
+  
+  categorySelect.innerHTML += deptCategories
+    .map(c => `<option value="${c._id}">${c.name}</option>`)
+    .join('');
+
+  if (selectedCategoryId) {
+    categorySelect.value = selectedCategoryId;
   }
 }
 
@@ -177,31 +203,30 @@ function renderRecords(records) {
   tbody.innerHTML = records
     .map(
       (record) => `
-    <tr data-id="${record._id}">
-      <td>
-        <input type="checkbox" class="record-select" data-id="${record._id}" ${
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" data-id="${record._id}">
+      <td class="px-6 py-4">
+        <input type="checkbox" class="record-select rounded border-slate-300 dark:bg-slate-800 dark:border-slate-700 text-primary" data-id="${record._id}" ${
         selectedRecords.has(record._id) ? 'checked' : ''
       }>
       </td>
-      <td><code>${record.recordId || record._id.slice(-8).toUpperCase()}</code></td>
-      <td>${record.department?.name || '-'}</td>
-      <td>${record.unit || '-'}</td>
-      <td>${record.category?.name || '-'}</td>
-      <td>${Utils.formatDate(record.date)}</td>
-      <td>${Utils.formatNumber(record.recordsReceived)}</td>
-      <td>${Utils.formatNumber(record.recordsProcessed)}</td>
-      <td>${Utils.formatNumber(record.pendingRecords)}</td>
-      <td>${Utils.getStatusBadge(record.status)}</td>
-      <td>
-        <div class="flex gap-sm">
-          <button class="btn btn-sm btn-icon edit-btn" data-id="${record._id}" title="Edit">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <td class="px-6 py-4"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono">${record.recordId || record._id.slice(-8).toUpperCase()}</code></td>
+      <td class="px-6 py-4 text-sm">${record.department?.name || '-'}</td>
+      <td class="px-6 py-4 text-sm font-medium">${record.unit || '-'}</td>
+      <td class="px-6 py-4 text-sm">${record.category?.name || '-'}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${Utils.formatDate(record.date)}</td>
+      <td class="px-6 py-4 text-sm text-center">${Utils.formatNumber(record.recordsReceived)}</td>
+      <td class="px-6 py-4 text-sm text-center">${Utils.formatNumber(record.recordsProcessed)}</td>
+      <td class="px-6 py-4">${Utils.getStatusBadge(record.status)}</td>
+      <td class="px-6 py-4 text-right">
+        <div class="flex justify-end gap-2">
+          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors edit-btn" data-id="${record._id}" title="Edit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
-          <button class="btn btn-sm btn-icon delete-btn" data-id="${record._id}" title="Delete">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition-colors delete-btn" data-id="${record._id}" title="Delete">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
@@ -219,10 +244,18 @@ function renderRecords(records) {
  */
 function renderPagination(pagination) {
   const container = document.getElementById('pagination');
+  const infoEl = document.getElementById('paginationInfo');
   if (!container || !pagination) return;
 
-  totalPages = pagination.totalPages;
-  currentPage = pagination.currentPage;
+  // Backend returns: { page, limit, total, pages }
+  totalPages = pagination.pages;
+  currentPage = pagination.page;
+
+  if (infoEl) {
+    const start = (currentPage - 1) * pagination.limit + 1;
+    const end = Math.min(currentPage * pagination.limit, pagination.total);
+    infoEl.textContent = `Showing ${pagination.total > 0 ? start : 0}–${end} of ${pagination.total} records`;
+  }
 
   if (totalPages <= 1) {
     container.innerHTML = '';
@@ -232,32 +265,28 @@ function renderPagination(pagination) {
   let html = '';
 
   // Previous button
-  html += `<button class="pagination-btn" data-page="${currentPage - 1}" ${
-    currentPage === 1 ? 'disabled' : ''
-  }>Prev</button>`;
+  html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
 
   // Page numbers
   const startPage = Math.max(1, currentPage - 2);
   const endPage = Math.min(totalPages, currentPage + 2);
 
   if (startPage > 1) {
-    html += `<button class="pagination-btn" data-page="1">1</button>`;
-    if (startPage > 2) html += `<span class="pagination-btn" disabled>...</span>`;
+    html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" data-page="1">1</button>`;
+    if (startPage > 2) html += `<span class="px-2 py-1.5 text-xs text-slate-400">...</span>`;
   }
 
   for (let i = startPage; i <= endPage; i++) {
-    html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    html += `<button class="px-3 py-1.5 text-xs font-medium border rounded-lg ${i === currentPage ? 'bg-primary text-white border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${i}">${i}</button>`;
   }
 
   if (endPage < totalPages) {
-    if (endPage < totalPages - 1) html += `<span class="pagination-btn" disabled>...</span>`;
-    html += `<button class="pagination-btn" data-page="${totalPages}">${totalPages}</button>`;
+    if (endPage < totalPages - 1) html += `<span class="px-2 py-1.5 text-xs text-slate-400">...</span>`;
+    html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" data-page="${totalPages}">${totalPages}</button>`;
   }
 
   // Next button
-  html += `<button class="pagination-btn" data-page="${currentPage + 1}" ${
-    currentPage === totalPages ? 'disabled' : ''
-  }>Next</button>`;
+  html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
 
   container.innerHTML = html;
 }
@@ -279,6 +308,11 @@ function setupEventListeners() {
 
   // Save record
   document.getElementById('saveRecordBtn')?.addEventListener('click', saveRecord);
+
+  // Department change updates categories dropdown
+  document.getElementById('department')?.addEventListener('change', (e) => {
+    updateCategoryDropdown(e.target.value);
+  });
 
   // Search with debounce
   const searchInput = document.getElementById('searchInput');
@@ -358,75 +392,6 @@ function setupEventListeners() {
 }
 
 /**
- * Open record modal
- */
-function openRecordModal(record = null) {
-  const modal = document.getElementById('recordModal');
-  const title = document.getElementById('modalTitle');
-  const form = document.getElementById('recordForm');
-
-  if (record) {
-    title.textContent = 'Edit Record';
-    document.getElementById('recordId').value = record._id;
-    document.getElementById('department').value = record.department?._id || '';
-    document.getElementById('unit').value = record.unit || '';
-    document.getElementById('category').value = record.category?._id || '';
-    document.getElementById('recordDate').value = Utils.formatDate(record.date, 'iso');
-    document.getElementById('recordsReceived').value = record.recordsReceived || 0;
-    document.getElementById('recordsProcessed').value = record.recordsProcessed || 0;
-    document.getElementById('recordStatus').value = record.status || 'received';
-    document.getElementById('calculatedValue').value = record.calculatedValue || '';
-    document.getElementById('notes').value = record.notes || '';
-  } else {
-    title.textContent = 'Add Record';
-    form.reset();
-    document.getElementById('recordId').value = '';
-    document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
-  }
-
-  modal?.classList.add('active');
-}
-
-/**
- * Save record
- */
-async function saveRecord() {
-  const id = document.getElementById('recordId').value;
-  const data = {
-    department: document.getElementById('department').value,
-    unit: document.getElementById('unit').value,
-    category: document.getElementById('category').value,
-    date: document.getElementById('recordDate').value,
-    recordsReceived: parseInt(document.getElementById('recordsReceived').value) || 0,
-    recordsProcessed: parseInt(document.getElementById('recordsProcessed').value) || 0,
-    status: document.getElementById('recordStatus').value,
-    calculatedValue: parseFloat(document.getElementById('calculatedValue').value) || 0,
-    notes: document.getElementById('notes').value,
-  };
-
-  try {
-    showLoading();
-
-    let response;
-    if (id) {
-      response = await API.records.update(id, data);
-    } else {
-      response = await API.records.create(data);
-    }
-
-    if (response.success) {
-      document.getElementById('recordModal')?.classList.remove('active');
-      Utils.showToast(id ? 'Record updated successfully' : 'Record created successfully', 'success');
-      loadRecords();
-    }
-  } catch (error) {
-    handleApiError(error, 'Failed to save record');
-  } finally {
-    hideLoading();
-  }
-}
-
-/**
  * Handle table actions
  */
 async function handleTableAction(e) {
@@ -436,16 +401,8 @@ async function handleTableAction(e) {
 
   if (editBtn) {
     const id = editBtn.dataset.id;
-    const row = editBtn.closest('tr');
-    // Fetch full record and open modal
-    try {
-      const response = await API.records.getById(id);
-      if (response.success) {
-        openRecordModal(response.data);
-      }
-    } catch (error) {
-      handleApiError(error, 'Failed to load record');
-    }
+    window.location.href = `data-entry.html?id=${id}`;
+    return;
   }
 
   if (deleteBtn) {
@@ -453,9 +410,11 @@ async function handleTableAction(e) {
     const confirmed = await Utils.confirm('Are you sure you want to delete this record?', 'Delete Record');
     if (confirmed) {
       try {
-        await API.records.delete(id);
-        Utils.showToast('Record deleted successfully', 'success');
-        loadRecords();
+        const response = await API.records.delete(id);
+        if (response.success) {
+          Utils.showToast('Record deleted successfully', 'success');
+          loadRecords();
+        }
       } catch (error) {
         handleApiError(error, 'Failed to delete record');
       }
@@ -463,10 +422,11 @@ async function handleTableAction(e) {
   }
 
   if (checkbox) {
+    const id = checkbox.dataset.id;
     if (checkbox.checked) {
-      selectedRecords.add(checkbox.dataset.id);
+      selectedRecords.add(id);
     } else {
-      selectedRecords.delete(checkbox.dataset.id);
+      selectedRecords.delete(id);
     }
   }
 }

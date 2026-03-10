@@ -150,29 +150,33 @@ function renderUsers(users) {
   if (!tbody) return;
 
   if (!users || users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">No users found</td></tr>';
     return;
   }
 
   tbody.innerHTML = users
     .map(
       (user) => `
-    <tr data-id="${user._id}">
-      <td>${user.username}</td>
-      <td>${user.email}</td>
-      <td><span class="badge badge-${user.role === 'admin' ? 'info' : 'neutral'}">${user.role}</span></td>
-      <td>${user.department?.name || '-'}</td>
-      <td>${Utils.getStatusBadge(user.active ? 'active' : 'inactive')}</td>
-      <td>
-        <div class="flex gap-sm">
-          <button class="btn btn-sm btn-icon edit-user-btn" data-id="${user._id}" title="Edit">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" data-id="${user._id}">
+      <td class="px-6 py-4">
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">${user.username}</span>
+          <span class="text-xs text-slate-400">${user.email}</span>
+        </div>
+      </td>
+      <td class="px-6 py-4"><span class="badge ${user.role === 'admin' ? 'badge-info' : 'badge-neutral'}">${user.role}</span></td>
+      <td class="px-6 py-4">${Utils.getStatusBadge(user.active ? 'active' : 'inactive')}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${user.department?.name || '-'}</td>
+      <td class="px-6 py-4 text-right">
+        <div class="flex justify-end gap-2">
+          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors edit-user-btn" data-id="${user._id}" title="Edit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
-          <button class="btn btn-sm btn-icon delete-user-btn" data-id="${user._id}" title="Delete">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition-colors delete-user-btn" data-id="${user._id}" title="Delete">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
@@ -303,28 +307,28 @@ function renderDepartments(departments) {
   if (!tbody) return;
 
   if (!departments || departments.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No departments found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">No departments found</td></tr>';
     return;
   }
 
   tbody.innerHTML = departments
     .map(
       (dept) => `
-    <tr data-id="${dept._id}">
-      <td><code>${dept.code}</code></td>
-      <td>${dept.name}</td>
-      <td>${dept.description || '-'}</td>
-      <td>${Utils.getStatusBadge(dept.active ? 'active' : 'inactive')}</td>
-      <td>
-        <div class="flex gap-sm">
-          <button class="btn btn-sm btn-icon edit-dept-btn" data-id="${dept._id}" title="Edit">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" data-id="${dept._id}">
+      <td class="px-6 py-4"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono">${dept.code}</code></td>
+      <td class="px-6 py-4 text-sm font-semibold">${dept.name}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${dept.description || '-'}</td>
+      <td class="px-6 py-4">${Utils.getStatusBadge(dept.active ? 'active' : 'inactive')}</td>
+      <td class="px-6 py-4 text-right">
+        <div class="flex justify-end gap-2">
+          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors edit-dept-btn" data-id="${dept._id}" title="Edit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
-          <button class="btn btn-sm btn-icon delete-dept-btn" data-id="${dept._id}" title="Delete">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition-colors delete-dept-btn" data-id="${dept._id}" title="Delete">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
@@ -437,28 +441,29 @@ function renderCategories(categories) {
   if (!tbody) return;
 
   if (!categories || categories.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No categories found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400 text-sm">No categories found</td></tr>';
     return;
   }
 
   tbody.innerHTML = categories
     .map(
       (cat) => `
-    <tr data-id="${cat._id}">
-      <td><code>${cat.code}</code></td>
-      <td>${cat.name}</td>
-      <td>${cat.description || '-'}</td>
-      <td>${Utils.getStatusBadge(cat.active ? 'active' : 'inactive')}</td>
-      <td>
-        <div class="flex gap-sm">
-          <button class="btn btn-sm btn-icon edit-cat-btn" data-id="${cat._id}" title="Edit">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" data-id="${cat._id}">
+      <td class="px-6 py-4"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono">${cat.code}</code></td>
+      <td class="px-6 py-4 text-sm font-semibold">${cat.name}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${cat.department?.name || '-'}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${cat.description || '-'}</td>
+      <td class="px-6 py-4">${Utils.getStatusBadge(cat.active ? 'active' : 'inactive')}</td>
+      <td class="px-6 py-4 text-right">
+        <div class="flex justify-end gap-2">
+          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors edit-cat-btn" data-id="${cat._id}" title="Edit">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
-          <button class="btn btn-sm btn-icon delete-cat-btn" data-id="${cat._id}" title="Delete">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition-colors delete-cat-btn" data-id="${cat._id}" title="Delete">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
@@ -471,7 +476,10 @@ function renderCategories(categories) {
     .join('');
 }
 
-function openCategoryModal(cat = null) {
+async function openCategoryModal(cat = null) {
+  // Load departments into dropdown before showing modal
+  await loadDepartmentsForDropdown('catDepartment');
+
   const modal = document.getElementById('categoryModal');
   const title = document.getElementById('categoryModalTitle');
 
@@ -481,6 +489,10 @@ function openCategoryModal(cat = null) {
     document.getElementById('catCode').value = cat.code;
     document.getElementById('catName').value = cat.name;
     document.getElementById('catDescription').value = cat.description || '';
+    // Set department if populated
+    if (cat.department?._id || cat.department) {
+      document.getElementById('catDepartment').value = cat.department?._id || cat.department;
+    }
   } else {
     title.textContent = 'Add Category';
     document.getElementById('categoryForm').reset();
@@ -658,27 +670,59 @@ async function loadLogs(page = 1) {
 }
 
 function renderLogs(logs) {
-  const tbody = document.getElementById('logsTableBody');
-  if (!tbody) return;
+  const list = document.getElementById('logsTableBody');
+  if (!list) return;
 
   if (!logs || logs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No activity logs found</td></tr>';
+    list.innerHTML = '<li class="px-6 py-8 text-center text-slate-400 text-sm">No activity logs found</li>';
     return;
   }
 
-  tbody.innerHTML = logs
-    .map(
-      (log) => `
-    <tr>
-      <td>${Utils.formatDate(log.timestamp, 'datetime')}</td>
-      <td>${log.userId?.username || 'System'}</td>
-      <td>${formatLogAction(log.action)}</td>
-      <td>${log.entityType || '-'}</td>
-      <td>${log.ipAddress || '-'}</td>
-    </tr>
-  `
-    )
-    .join('');
+  const actionLabels = {
+    login: 'Logged in', logout: 'Logged out',
+    create: 'Created', update: 'Updated', delete: 'Deleted',
+    import: 'Imported data', export: 'Exported data',
+    backup_created: 'Backup created', backup_deleted: 'Backup deleted',
+    password_change: 'Password changed',
+  };
+
+  const actionColors = {
+    login: 'bg-blue-100 text-blue-700',
+    create: 'bg-green-100 text-green-700',
+    update: 'bg-amber-100 text-amber-700',
+    delete: 'bg-red-100 text-red-700',
+    import: 'bg-purple-100 text-purple-700',
+    export: 'bg-teal-100 text-teal-700',
+    logout: 'bg-slate-100 text-slate-500',
+    backup_created: 'bg-indigo-100 text-indigo-700',
+    backup_deleted: 'bg-red-100 text-red-700',
+    password_change: 'bg-orange-100 text-orange-700',
+  };
+
+  list.innerHTML = logs.map((log) => {
+    const label = actionLabels[log.action] || log.action.replace(/_/g, ' ');
+    const colorClass = actionColors[log.action] || 'bg-slate-100 text-slate-500';
+    const user = log.userId?.username || 'System';
+    return `
+      <li class="flex items-center gap-4 px-6 py-4">
+        <div class="flex-shrink-0 size-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <span class="text-slate-500 dark:text-slate-400 text-sm font-bold">${user.charAt(0).toUpperCase()}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">${user}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${colorClass}">${label}</span>
+            ${log.entityType ? `<span class="text-xs text-slate-400">${log.entityType}</span>` : ''}
+          </div>
+          <div class="flex items-center gap-3 mt-0.5">
+            <span class="text-xs text-slate-400">${Utils.formatDate(log.timestamp, 'datetime')}</span>
+            ${log.ipAddress ? `<span class="text-xs text-slate-300">·</span><span class="text-xs text-slate-400">${log.ipAddress}</span>` : ''}
+          </div>
+        </div>
+        <span class="text-xs text-slate-400 flex-shrink-0">${Utils.getRelativeTime(log.timestamp)}</span>
+      </li>
+    `;
+  }).join('');
 }
 
 function formatLogAction(action) {
@@ -718,49 +762,6 @@ async function loadDepartmentsForDropdown(selectId) {
     console.error('Failed to load departments:', error);
   }
 }
-
-// Add settings tab styles
-const settingsStyles = document.createElement('style');
-settingsStyles.textContent = `
-  .settings-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 12px;
-  }
-
-  .settings-tab {
-    padding: 8px 16px;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: var(--border-radius-sm);
-    transition: all var(--transition-fast);
-  }
-
-  .settings-tab:hover {
-    background: var(--gray-100);
-    color: var(--text-primary);
-  }
-
-  .settings-tab.active {
-    background: var(--primary-600);
-    color: var(--text-inverse);
-  }
-
-  .settings-panel {
-    display: none;
-  }
-
-  .settings-panel.active {
-    display: block;
-  }
-`;
-document.head.appendChild(settingsStyles);
 
 // Make functions available globally
 window.initSettings = initSettings;

@@ -127,7 +127,7 @@ function updateRecentRecords(records) {
   if (!records || records.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" class="text-center text-muted">No records found</td>
+        <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">No records found</td>
       </tr>
     `;
     return;
@@ -136,12 +136,12 @@ function updateRecentRecords(records) {
   tbody.innerHTML = records
     .map(
       (record) => `
-    <tr>
-      <td><code>${record.recordId || record._id.slice(-8).toUpperCase()}</code></td>
-      <td>${record.unit || '-'}</td>
-      <td>${Utils.formatNumber(record.recordsReceived)}</td>
-      <td>${Utils.formatNumber(record.recordsProcessed)}</td>
-      <td>${Utils.getStatusBadge(record.status)}</td>
+    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+      <td class="px-6 py-4"><code class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono">${record.recordId || record._id.slice(-8).toUpperCase()}</code></td>
+      <td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-300">${record.unit || '-'}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${Utils.formatNumber(record.recordsReceived)}</td>
+      <td class="px-6 py-4 text-sm text-slate-500">${Utils.formatNumber(record.recordsProcessed)}</td>
+      <td class="px-6 py-4 text-center">${Utils.getStatusBadge(record.status)}</td>
     </tr>
   `
     )
@@ -156,27 +156,53 @@ function updateActivityList(activities) {
   if (!list) return;
 
   if (!activities || activities.length === 0) {
-    list.innerHTML = '<div class="text-center text-muted">No recent activity</div>';
+    list.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+        <span class="material-symbols-outlined text-4xl mb-2">history</span>
+        <p class="text-sm">No recent activity</p>
+      </div>
+    `;
     return;
   }
 
-  list.innerHTML = activities
-    .map((activity) => {
-      const icon = Utils.getActivityIcon(activity.action);
-      const user = activity.userId?.username || 'System';
-      return `
-        <div class="activity-item">
-          <div class="activity-icon ${icon.class}">${icon.icon}</div>
-          <div class="activity-content">
-            <div class="activity-text">
-              <strong>${user}</strong> - ${formatActivityAction(activity.action)}
-            </div>
-            <div class="activity-time">${Utils.getRelativeTime(activity.timestamp)}</div>
-          </div>
+  const actionConfig = {
+    login:           { label: 'Logged in',       bg: 'bg-blue-100 dark:bg-blue-900/30',   text: 'text-blue-700 dark:text-blue-300',   icon: 'login' },
+    logout:          { label: 'Logged out',      bg: 'bg-slate-100 dark:bg-slate-800',    text: 'text-slate-500 dark:text-slate-400', icon: 'logout' },
+    create:          { label: 'Created',         bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-300', icon: 'add_circle' },
+    update:          { label: 'Updated',         bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', icon: 'edit' },
+    delete:          { label: 'Deleted',         bg: 'bg-red-100 dark:bg-red-900/30',    text: 'text-red-700 dark:text-red-300',    icon: 'delete' },
+    import:          { label: 'Imported data',   bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-300', icon: 'upload' },
+    export:          { label: 'Exported data',   bg: 'bg-teal-100 dark:bg-teal-900/30',  text: 'text-teal-700 dark:text-teal-300',  icon: 'download' },
+    backup_created:  { label: 'Backup created',  bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-700 dark:text-indigo-300', icon: 'cloud_download' },
+    backup_deleted:  { label: 'Backup deleted',  bg: 'bg-red-100 dark:bg-red-900/30',    text: 'text-red-700 dark:text-red-300',    icon: 'cloud_off' },
+    password_change: { label: 'Changed password', bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-300', icon: 'lock' },
+  };
+
+  list.innerHTML = activities.map((activity) => {
+    const cfg = actionConfig[activity.action] || { label: activity.action, bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-500', icon: 'info' };
+    const user = activity.userId?.username || 'System';
+    const initials = user.slice(0, 2).toUpperCase();
+    const entity = activity.entityType ? `<span class="text-xs text-slate-400 font-medium">&middot; ${activity.entityType}</span>` : '';
+    return `
+      <div class="flex items-start gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+        <div class="flex-shrink-0 size-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+          <span class="text-primary text-xs font-bold">${initials}</span>
         </div>
-      `;
-    })
-    .join('');
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">${user}</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${cfg.bg} ${cfg.text}">
+              <span class="material-symbols-outlined" style="font-size:12px">${cfg.icon}</span>
+              ${cfg.label}
+            </span>
+            ${entity}
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">${Utils.formatDate(activity.timestamp, 'datetime')}</p>
+        </div>
+        <span class="text-[11px] text-slate-400 flex-shrink-0 mt-0.5 font-medium">${Utils.getRelativeTime(activity.timestamp)}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 /**
