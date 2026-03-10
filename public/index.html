@@ -33,6 +33,46 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
+
+<script>
+function toggleSidebar(e) {
+  if (e) e.stopPropagation();
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('.main-content');
+  let backdrop = document.getElementById('sidebar-backdrop');
+  
+  if (!backdrop && window.innerWidth <= 1024) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'sidebar-backdrop';
+    backdrop.className = 'sidebar-backdrop';
+    backdrop.onclick = closeSidebar;
+    document.body.appendChild(backdrop);
+  }
+
+  if (window.innerWidth > 1024) {
+    if (sidebar) sidebar.classList.toggle('hidden-desktop');
+    if (mainContent) mainContent.classList.toggle('expanded-desktop');
+    if (sidebar) localStorage.setItem('sidebar-hidden', sidebar.classList.contains('hidden-desktop'));
+  } else {
+    if (sidebar) {
+      if (sidebar.classList.contains('active')) {
+        closeSidebar();
+      } else {
+        sidebar.classList.add('active');
+        if (backdrop) backdrop.classList.add('active');
+      }
+    }
+  }
+}
+function closeSidebar(e) {
+  if (e) e.stopPropagation();
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('active');
+  if (backdrop) backdrop.classList.remove('active');
+}
+</script>
+
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col">
   <div class="flex-1 flex items-center justify-center p-6">

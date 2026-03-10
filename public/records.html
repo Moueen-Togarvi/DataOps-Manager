@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="css/sidebar.css" rel="stylesheet"/>
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -40,19 +41,66 @@
     .badge-info { background: #dbeafe; color: #1e40af; }
     .badge-neutral { background: #f1f5f9; color: #475569; }
   </style>
+
+<script>
+function toggleSidebar(e) {
+  if (e) e.stopPropagation();
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('.main-content');
+  let backdrop = document.getElementById('sidebar-backdrop');
+  
+  if (!backdrop && window.innerWidth <= 1024) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'sidebar-backdrop';
+    backdrop.className = 'sidebar-backdrop';
+    backdrop.onclick = closeSidebar;
+    document.body.appendChild(backdrop);
+  }
+
+  if (window.innerWidth > 1024) {
+    if (sidebar) sidebar.classList.toggle('hidden-desktop');
+    if (mainContent) mainContent.classList.toggle('expanded-desktop');
+    if (sidebar) localStorage.setItem('sidebar-hidden', sidebar.classList.contains('hidden-desktop'));
+  } else {
+    if (sidebar) {
+      if (sidebar.classList.contains('active')) {
+        closeSidebar();
+      } else {
+        sidebar.classList.add('active');
+        if (backdrop) backdrop.classList.add('active');
+      }
+    }
+  }
+}
+function closeSidebar(e) {
+  if (e) e.stopPropagation();
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('active');
+  if (backdrop) backdrop.classList.remove('active');
+}
+</script>
+
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
   <div class="flex h-screen overflow-hidden">
     <!-- Sidebar Navigation -->
     <aside class="sidebar w-64 flex-shrink-0 bg-sidebar-bg dark:bg-slate-900 border-r border-blue-100 dark:border-slate-800 flex flex-col" id="sidebar">
       <div class="p-6 flex items-center gap-3">
-        <div class="size-8 bg-primary flex items-center justify-center rounded-lg">
+        <div class="size-8 bg-primary flex items-center justify-center rounded-lg shrink-0">
           <span class="material-symbols-outlined text-white">analytics</span>
         </div>
-        <div>
+        <div class="flex-1 min-w-0">
           <h1 class="text-primary-dark dark:text-white text-sm font-bold tracking-tight uppercase">DataOps</h1>
           <p class="text-primary-light text-[10px] uppercase tracking-widest font-semibold">Manager</p>
         </div>
+        <!-- Explicit Close Button for Mobile -->
+        <div class="lg:hidden" onclick="closeSidebar(event)" style="cursor: pointer;">
+          <button class="p-2 text-primary hover:bg-slate-800 hover:text-white rounded-lg transition-colors flex items-center justify-center pointer-events-none">
+            <span class="material-symbols-outlined" style="font-size: 28px;">close</span>
+          </button>
+        </div>
+                
       </div>
       <nav class="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto">
         <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="dashboard.html">
@@ -98,43 +146,32 @@
 
     <!-- Main Content Area -->
     <main class="main-content flex-1 flex flex-col min-w-0 overflow-hidden">
-      <!-- Mobile Header -->
-      <header class="h-16 lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-4 shrink-0 z-30">
-        <div class="flex items-center gap-3">
-          <button class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 rounded-lg transition-colors" id="sidebarToggle">
-            <span class="material-symbols-outlined">menu</span>
-          </button>
-          <h1 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">DataOps</h1>
-        </div>
-        <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-          <span class="text-primary text-xs font-bold">U</span>
-        </div>
-      </header>
-
-      <!-- Header (Desktop) -->
-      <header class="h-16 hidden lg:flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 items-center justify-between px-6 shrink-0">
+      <!-- Main Header -->
+      <header class="h-16 flex items-center justify-between px-4 lg:px-8 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-30">
         <div class="flex items-center gap-4 flex-1">
-          <button class="lg:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg" id="sidebarToggle">
+          <button class="p-3 text-slate-600 dark:text-slate-400 hover:bg-primary/10 rounded-lg transition-colors sidebar-toggle" onclick="toggleSidebar(event)">
             <span class="material-symbols-outlined">menu</span>
           </button>
           <div class="relative max-w-md w-full hidden md:block">
             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20" placeholder="Quick search..." type="text" id="searchInput"/>
+            <input class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Quick search..." type="text" id="searchInput"/>
           </div>
+          <h2 class="text-sm lg:text-lg font-bold text-slate-900 dark:text-white md:hidden">Records</h2>
         </div>
+        
         <div class="flex items-center gap-3">
-          <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800" id="importBtn">
-            <span class="material-symbols-outlined">upload</span>
-            Import
+          <button class="flex items-center gap-2 px-3 py-1.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800" id="importBtn">
+            <span class="material-symbols-outlined text-sm">upload</span>
+            <span class="hidden sm:inline">Import</span>
           </button>
-          <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800" id="exportBtn">
-            <span class="material-symbols-outlined">download</span>
-            Export
+          <button class="flex items-center gap-2 px-3 py-1.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800" id="exportBtn">
+            <span class="material-symbols-outlined text-sm">download</span>
+            <span class="hidden sm:inline">Export</span>
           </button>
-          <a href="data-entry.html" class="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90" id="addRecordBtn">
-            <span class="material-symbols-outlined">add</span>
-            Add Record
-          </a>
+          <div class="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
+          <div class="size-8 lg:size-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 text-primary font-bold">
+            U
+          </div>
         </div>
       </header>
 
