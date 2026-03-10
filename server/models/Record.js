@@ -96,7 +96,6 @@ const recordSchema = new mongoose.Schema({
 });
 
 // Indexes for efficient queries
-recordSchema.index({ recordId: 1 });
 recordSchema.index({ department: 1 });
 recordSchema.index({ category: 1 });
 recordSchema.index({ status: 1 });
