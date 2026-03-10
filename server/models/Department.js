@@ -42,7 +42,6 @@ const departmentSchema = new mongoose.Schema({
 });
 
 // Indexes
-departmentSchema.index({ code: 1 });
 departmentSchema.index({ active: 1 });
 
 /**
