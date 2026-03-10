@@ -315,63 +315,71 @@ function renderTrendChart(data) {
   // Destroy existing chart
   if (trendChart) {
     trendChart.destroy();
+    trendChart = null;
   }
 
-  if (!data || data.length === 0) {
-    canvas.parentElement.innerHTML = '<div class="text-center text-muted">No data available</div>';
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    const parent = canvas.parentElement;
+    if (parent) {
+      parent.innerHTML = '<div class="flex items-center justify-center h-full text-slate-400 text-sm italic">No trend data available for this period</div>';
+    }
     return;
   }
 
-  trendChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: data.map((d) => {
-        const date = new Date(d._id);
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      }),
-      datasets: [
-        {
-          label: 'Received',
-          data: data.map((d) => d.totalReceived),
-          borderColor: '#627d98',
-          backgroundColor: 'rgba(98, 125, 152, 0.1)',
-          fill: true,
-          tension: 0.4,
+  try {
+    trendChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map((d) => {
+          const date = new Date(d._id);
+          return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }),
+        datasets: [
+          {
+            label: 'Received',
+            data: data.map((d) => d.totalReceived),
+            borderColor: '#627d98',
+            backgroundColor: 'rgba(98, 125, 152, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+          {
+            label: 'Processed',
+            data: data.map((d) => d.totalProcessed),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              boxWidth: 12,
+              padding: 12,
+              font: { size: 12 },
+            },
+          },
         },
-        {
-          label: 'Processed',
-          data: data.map((d) => d.totalProcessed),
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-          fill: true,
-          tension: 0.4,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            boxWidth: 12,
-            padding: 12,
-            font: { size: 12 },
+        scales: {
+          x: {
+            grid: { display: false },
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#e5e7eb' },
           },
         },
       },
-      scales: {
-        x: {
-          grid: { display: false },
-        },
-        y: {
-          beginAtZero: true,
-          grid: { color: '#e5e7eb' },
-        },
-      },
-    },
-  });
+    });
+  } catch (error) {
+    console.error('Trend Chart rendering error:', error);
+  }
 }
 
 /**

@@ -110,11 +110,13 @@ recordSchema.index({ department: 1, status: 1 });
 recordSchema.pre('save', function(next) {
   this.pendingRecords = this.recordsReceived - this.recordsProcessed;
 
-  // Auto-update status based on processing
-  if (this.pendingRecords === 0 && this.recordsReceived > 0) {
-    this.status = 'processed';
-  } else if (this.pendingRecords > 0 && this.status === 'processed') {
-    this.status = 'pending';
+  // Auto-update status based on processing ONLY if status wasn't manually modified
+  if (!this.isModified('status')) {
+    if (this.pendingRecords === 0 && this.recordsReceived > 0) {
+      this.status = 'processed';
+    } else if (this.pendingRecords > 0 && this.status === 'processed') {
+      this.status = 'pending';
+    }
   }
 
   next();

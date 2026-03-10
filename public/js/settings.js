@@ -621,9 +621,12 @@ async function createBackup() {
     if (response.success) {
       Utils.showToast('Backup created successfully', 'success');
       loadBackups();
+    } else {
+      throw new Error(response.message || 'Backup failed');
     }
   } catch (error) {
-    handleApiError(error, 'Failed to create backup');
+    console.error('Backup creation error:', error);
+    handleApiError(error, 'Failed to create backup. This might be due to a server-side issue or timeout.');
   } finally {
     hideLoading();
   }
@@ -661,8 +664,9 @@ async function loadLogs(page = 1) {
   try {
     const response = await API.logs.getAll({ page, limit: 20 });
     if (response.success) {
-      renderLogs(response.data);
-      // Could add pagination here
+      // The API returns { success: true, data: { logs: [], pagination: {} } }
+      const logs = response.data?.logs || response.data || [];
+      renderLogs(logs);
     }
   } catch (error) {
     handleApiError(error, 'Failed to load logs');
@@ -673,7 +677,10 @@ function renderLogs(logs) {
   const list = document.getElementById('logsTableBody');
   if (!list) return;
 
-  if (!logs || logs.length === 0) {
+  // Defensive check: ensure logs is an array
+  const logsArray = Array.isArray(logs) ? logs : [];
+
+  if (logsArray.length === 0) {
     list.innerHTML = '<li class="px-6 py-8 text-center text-slate-400 text-sm">No activity logs found</li>';
     return;
   }
@@ -699,8 +706,8 @@ function renderLogs(logs) {
     password_change: 'bg-orange-100 text-orange-700',
   };
 
-  list.innerHTML = logs.map((log) => {
-    const label = actionLabels[log.action] || log.action.replace(/_/g, ' ');
+  list.innerHTML = logsArray.map((log) => {
+    const label = actionLabels[log.action] || log.action?.replace(/_/g, ' ') || 'Action';
     const colorClass = actionColors[log.action] || 'bg-slate-100 text-slate-500';
     const user = log.userId?.username || 'System';
     return `
