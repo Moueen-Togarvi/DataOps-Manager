@@ -37,9 +37,17 @@ async function initApp() {
  */
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarToggles = document.querySelectorAll('#sidebarToggle, .sidebar-toggle');
+  const collapseToggle = document.getElementById('collapseToggle');
+  const mainContent = document.querySelector('.main-content');
   let backdrop = document.getElementById('sidebar-backdrop');
   
+  // Apply saved state on desktop
+  if (localStorage.getItem('sidebar-collapsed') === 'true' && window.innerWidth > 1024) {
+    sidebar?.classList.add('collapsed');
+    mainContent?.classList.add('expanded');
+  }
+
   if (!backdrop && sidebar) {
     backdrop = document.createElement('div');
     backdrop.id = 'sidebar-backdrop';
@@ -47,10 +55,13 @@ function initSidebar() {
     document.body.appendChild(backdrop);
   }
 
-  if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-      if (backdrop) backdrop.classList.toggle('active');
+  if (sidebarToggles.length > 0 && sidebar) {
+    sidebarToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        sidebar.classList.toggle('active');
+        if (backdrop) backdrop.classList.toggle('active');
+      });
     });
 
     if (backdrop) {
@@ -68,6 +79,14 @@ function initSidebar() {
           if (backdrop) backdrop.classList.remove('active');
         }
       });
+    });
+  }
+
+  if (collapseToggle && sidebar) {
+    collapseToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      if (mainContent) mainContent.classList.toggle('expanded');
+      localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
     });
   }
 
