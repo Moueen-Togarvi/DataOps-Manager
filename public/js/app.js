@@ -38,22 +38,36 @@ async function initApp() {
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');
   const sidebarToggle = document.getElementById('sidebarToggle');
+  let backdrop = document.getElementById('sidebar-backdrop');
+  
+  if (!backdrop && sidebar) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'sidebar-backdrop';
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+  }
 
   if (sidebarToggle && sidebar) {
     sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('active');
+      if (backdrop) backdrop.classList.toggle('active');
     });
 
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', (e) => {
-      if (
-        window.innerWidth <= 768 &&
-        sidebar.classList.contains('active') &&
-        !sidebar.contains(e.target) &&
-        !sidebarToggle.contains(e.target)
-      ) {
+    if (backdrop) {
+      backdrop.addEventListener('click', () => {
         sidebar.classList.remove('active');
-      }
+        backdrop.classList.remove('active');
+      });
+    }
+
+    // Close sidebar when clicking nav items on mobile
+    sidebar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) {
+          sidebar.classList.remove('active');
+          if (backdrop) backdrop.classList.remove('active');
+        }
+      });
     });
   }
 

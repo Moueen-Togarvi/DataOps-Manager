@@ -273,6 +273,8 @@ app.get('/api/backup', auth, adminOnly, async (req, res, next) => {
 });
 
 app.post('/api/backup', auth, adminOnly, async (req, res, next) => {
+  // Set a longer timeout for backup creation (5 minutes)
+  req.setTimeout(300000);
   try {
     const result = await createBackup();
 

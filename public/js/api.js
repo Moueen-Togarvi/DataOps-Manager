@@ -67,7 +67,8 @@ const API = {
       if (error instanceof APIError) {
         throw error;
       }
-      throw new APIError('Network error. Please check your connection.', 0, {});
+      console.error('API Fetch Error:', error);
+      throw new APIError(`Network or server error: ${error.message || 'Please check your connection.'}`, 0, {});
     }
   },
 
