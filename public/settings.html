@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Settings - DataOps Manager</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#3c83f6",
+            "background-light": "#f8fafc",
+            "background-dark": "#0f172a",
+            "sidebar-bg": "#eff6ff",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-size: 20px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 bg-sidebar-bg dark:bg-slate-900 border-r border-blue-100 dark:border-slate-800 flex flex-col" id="sidebar">
+      <div class="p-6 flex items-center gap-3">
+        <div class="size-8 bg-primary flex items-center justify-center rounded-lg">
+          <span class="material-symbols-outlined text-white">analytics</span>
+        </div>
+        <div>
+          <h1 class="text-primary-dark dark:text-white text-sm font-bold tracking-tight uppercase">DataOps</h1>
+          <p class="text-primary-light text-[10px] uppercase tracking-widest font-semibold">Manager</p>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="dashboard.html">
+          <span class="material-symbols-outlined">home</span>
+          <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="records.html">
+          <span class="material-symbols-outlined">inventory_2</span>
+          <span class="text-sm font-medium">Records</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="reports.html">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="text-sm font-medium">Reports</span>
+        </a>
+        <div class="mt-4 mb-2 px-3">
+          <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Administration</p>
+        </div>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary transition-colors" href="settings.html">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          <span class="text-sm font-semibold">Settings</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-100 dark:border-slate-800">
+        <div class="flex items-center gap-3 px-3 py-2">
+          <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30" id="userAvatar">
+            <span class="text-primary text-xs font-bold">U</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-slate-900 dark:text-white truncate" id="userName">User</p>
+            <p class="text-[10px] text-primary font-bold uppercase truncate" id="userRole">Role</p>
+          </div>
+        </div>
+        <button class="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" id="logoutBtn">
+          <span class="material-symbols-outlined text-base">logout</span>
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark">
+      <!-- Header -->
+      <header class="h-16 flex items-center justify-between px-8 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
+        <div class="flex items-center gap-4">
+          <button class="lg:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg" id="sidebarToggle">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <h2 class="text-lg font-bold">Admin Console</h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800" id="exportDataBtn">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            Export Data
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="flex-1 overflow-y-auto p-6 lg:p-8 custom-scrollbar">
+        <div class="max-w-6xl mx-auto space-y-8">
+          <!-- Page Header -->
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div class="space-y-1">
+              <h1 class="text-3xl font-extrabold tracking-tight">Settings & Configuration</h1>
+              <p class="text-slate-600 dark:text-slate-400 text-base">Control access, manage users, and monitor system activity.</p>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between">
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Users</p>
+                <span class="material-symbols-outlined text-primary">groups</span>
+              </div>
+              <p class="text-2xl font-bold" id="activeUsersCount">0</p>
+              <p class="text-emerald-600 dark:text-emerald-400 text-xs font-bold">System Users</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between">
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Departments</p>
+                <span class="material-symbols-outlined text-emerald-500">domain</span>
+              </div>
+              <p class="text-2xl font-bold" id="departmentsCount">0</p>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Active Units</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between">
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Categories</p>
+                <span class="material-symbols-outlined text-amber-500">category</span>
+              </div>
+              <p class="text-2xl font-bold" id="categoriesCount">0</p>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Record Types</p>
+            </div>
+          </div>
+
+          <!-- Settings Tabs -->
+          <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
+            <button class="px-4 py-3 text-sm font-semibold text-primary border-b-2 border-primary settings-tab active" data-tab="users">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base">group</span> Users</span>
+            </button>
+            <button class="px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 settings-tab" data-tab="departments">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base">domain</span> Departments</span>
+            </button>
+            <button class="px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 settings-tab" data-tab="categories">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base">category</span> Categories</span>
+            </button>
+            <button class="px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 settings-tab" data-tab="backup">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base">cloud_download</span> Backup</span>
+            </button>
+            <button class="px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 settings-tab" data-tab="logs">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-base">history</span> Activity Logs</span>
+            </button>
+          </div>
+
+          <!-- Users Panel -->
+          <div class="settings-panel active" id="usersPanel">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+              <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+                <h3 class="text-lg font-bold">User Management</h3>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110" id="addUserBtn">
+                  <span class="material-symbols-outlined text-[18px]">person_add</span>
+                  Add User
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">User</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Role</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Department</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="usersTableBody">
+                    <tr>
+                      <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Departments Panel -->
+          <div class="settings-panel" id="departmentsPanel">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+              <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+                <h3 class="text-lg font-bold">Departments</h3>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110" id="addDepartmentBtn">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                  Add Department
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Code</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Description</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="departmentsTableBody">
+                    <tr>
+                      <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories Panel -->
+          <div class="settings-panel" id="categoriesPanel">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+              <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+                <h3 class="text-lg font-bold">Categories</h3>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110" id="addCategoryBtn">
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                  Add Category
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Code</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Name</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Description</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="categoriesTableBody">
+                    <tr>
+                      <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backup Panel -->
+          <div class="settings-panel" id="backupPanel">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                  <h3 class="text-lg font-bold">Database Backup</h3>
+                </div>
+                <div class="p-6">
+                  <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">Create and manage database backups. Backups are automatically created daily.</p>
+                  <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-primary/90" id="createBackupBtn">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    Create Backup Now
+                  </button>
+                </div>
+              </div>
+              <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                  <h3 class="text-lg font-bold">Backup History</h3>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Filename</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Size</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Created</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="backupsTableBody">
+                      <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Logs Panel -->
+          <div class="settings-panel" id="logsPanel">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                <h3 class="text-lg font-bold">Activity Logs</h3>
+              </div>
+              <ul class="divide-y divide-slate-100 dark:divide-slate-800" id="logsTableBody">
+                <li class="p-6 text-center text-slate-400 text-sm">Loading...</li>
+              </ul>
+              <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-500" id="logsPaginationInfo">Showing 0 entries</span>
+                <div class="flex items-center gap-1" id="logsPagination"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="h-10 border-t border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white dark:bg-slate-900/50">
+        <p class="text-[10px] text-slate-400 font-medium tracking-tight uppercase">DataOps Manager v1.0.0 | Security Protocol: Active</p>
+        <p class="text-[10px] text-slate-400 font-medium tracking-tight uppercase">Last Sync: Just Now</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- User Modal -->
+  <div class="modal-overlay fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="userModal">
+    <div class="bg-white dark:bg-slate-900 rounded-lg shadow-xl max-w-lg w-full mx-4">
+      <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-lg font-bold" id="userModalTitle">Add User</h3>
+        <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg modal-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-6">
+        <form id="userForm" class="space-y-4">
+          <input type="hidden" id="userId">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Username *</label>
+              <input type="text" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userUsername" required/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email *</label>
+              <input type="email" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userEmail" required/>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
+              <input type="password" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userPassword" placeholder="Leave blank to keep current"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Role *</label>
+              <select class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userRole" required>
+                <option value="data_entry">Data Entry</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department</label>
+              <select class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userDepartment">
+                <option value="">None</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+              <select class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="userActive">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+        <button class="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 modal-close">Cancel</button>
+        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90" id="saveUserBtn">Save User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Modal -->
+  <div class="modal-overlay fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="departmentModal">
+    <div class="bg-white dark:bg-slate-900 rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-lg font-bold" id="departmentModalTitle">Add Department</h3>
+        <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg modal-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-6">
+        <form id="departmentForm" class="space-y-4">
+          <input type="hidden" id="departmentId">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Code *</label>
+            <input type="text" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 uppercase" id="deptCode" required maxlength="10"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
+            <input type="text" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="deptName" required/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+            <textarea class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="deptDescription" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+        <button class="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 modal-close">Cancel</button>
+        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90" id="saveDepartmentBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div class="modal-overlay fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="categoryModal">
+    <div class="bg-white dark:bg-slate-900 rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-lg font-bold" id="categoryModalTitle">Add Category</h3>
+        <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg modal-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-6">
+        <form id="categoryForm" class="space-y-4">
+          <input type="hidden" id="categoryId">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department *</label>
+            <select class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="catDepartment" required>
+              <option value="">Select Department</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Code *</label>
+            <input type="text" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 uppercase" id="catCode" required maxlength="10"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
+            <input type="text" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="catName" required/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+            <textarea class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary/20" id="catDescription" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+        <button class="px-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 modal-close">Cancel</button>
+        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90" id="saveCategoryBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

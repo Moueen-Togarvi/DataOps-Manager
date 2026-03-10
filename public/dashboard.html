@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Dashboard - DataOps Manager</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#3c83f6",
+            "primary-dark": "#1d4ed8",
+            "primary-light": "#60a5fa",
+            "muted-indigo": "#64748b",
+            "soft-gold": "#fbbf24",
+            "background-light": "#f8fafc",
+            "background-dark": "#0f172a",
+            "sidebar-bg": "#eff6ff",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-size: 20px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 flex-shrink-0 bg-sidebar-bg dark:bg-slate-900 border-r border-blue-100 dark:border-slate-800 flex flex-col" id="sidebar">
+      <div class="p-6 flex items-center gap-3">
+        <div class="size-8 bg-primary flex items-center justify-center rounded-lg">
+          <span class="material-symbols-outlined text-white">analytics</span>
+        </div>
+        <div>
+          <h1 class="text-primary-dark dark:text-white text-sm font-bold tracking-tight uppercase">DataOps</h1>
+          <p class="text-primary-light text-[10px] uppercase tracking-widest font-semibold">Manager</p>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white group" href="dashboard.html">
+          <span class="material-symbols-outlined">home</span>
+          <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="records.html">
+          <span class="material-symbols-outlined">inventory_2</span>
+          <span class="text-sm font-medium">Records</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" href="reports.html">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="text-sm font-medium">Reports</span>
+        </a>
+        <div class="mt-4 mb-2 px-3">
+          <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Administration</p>
+        </div>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors admin-only" href="settings.html">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          <span class="text-sm font-medium">Settings</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-100 dark:border-slate-800">
+        <div class="flex items-center gap-3 px-3 py-2">
+          <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30" id="userAvatar">
+            <span class="text-primary text-xs font-bold">U</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-slate-900 dark:text-white truncate" id="userName">User</p>
+            <p class="text-[10px] text-primary font-bold uppercase truncate" id="userRole">Role</p>
+          </div>
+        </div>
+        <button class="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors" id="logoutBtn">
+          <span class="material-symbols-outlined text-base">logout</span>
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark">
+      <!-- Header -->
+      <header class="h-16 flex items-center justify-between px-8 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
+        <div class="flex items-center gap-4">
+          <button class="lg:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg" id="sidebarToggle">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Dashboard</h2>
+          <div class="h-4 w-[1px] bg-slate-300"></div>
+          <div class="flex items-center gap-2 px-2 py-1 bg-blue-50 dark:bg-slate-800 rounded-lg">
+            <span class="size-2 rounded-full bg-green-500"></span>
+            <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase">Live</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="relative hidden md:flex items-center">
+            <span class="material-symbols-outlined absolute left-3 text-slate-400">search</span>
+            <input class="pl-10 pr-4 py-1.5 text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg w-64 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all" placeholder="Search records..." type="text"/>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">notifications</span>
+              <span class="absolute top-2 right-2 size-2 bg-red-500 border border-white rounded-full"></span>
+            </button>
+          </div>
+          <span class="text-xs text-slate-500 font-medium" id="currentDate"></span>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <div class="flex-1 overflow-y-auto p-6 lg:p-8 custom-scrollbar">
+        <!-- Analytics Cards Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <!-- Card 1: Total Records -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Total Records</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="totalRecords">0</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span>All time</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Received -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Received</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="totalReceived">0</span>
+              <span class="text-xs font-semibold text-green-600" id="receivedChange">+0%</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span>Last 24h</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Processed -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Processed</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="totalProcessed">0</span>
+              <span class="text-xs font-semibold text-green-600" id="processedChange">+0%</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span id="completionRate">0% Completion</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Pending -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Pending</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="totalPending">0</span>
+              <span class="text-xs font-semibold text-amber-600" id="pendingChange">-0%</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span>Action Required</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- Card 5: Calculated Value -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Calculated Value</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="totalCalculatedValue">$0</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span>Total</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+
+          <!-- Card 6: Discrepancies -->
+          <div class="flex flex-col text-left p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:shadow-md hover:border-primary transition-all group">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2">Discrepancies</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900 dark:text-slate-100" id="discrepancyCount">0</span>
+              <span class="text-xs font-semibold text-red-600" id="discrepancyChange">-0%</span>
+            </div>
+            <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+              <span>Audit Required</span>
+              <span class="material-symbols-outlined group-hover:text-primary transition-colors">arrow_forward</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Grid: Table and Chart -->
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          <!-- Recent Records Table -->
+          <div class="xl:col-span-3 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-blue-50/30 dark:bg-slate-800/20">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Recent Records</h3>
+              <div class="flex gap-2">
+                <a class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 transition-colors" href="records.html">View All</a>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 dark:bg-slate-800/50">
+                  <tr>
+                    <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">ID</th>
+                    <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">Unit</th>
+                    <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">Received</th>
+                    <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">Processed</th>
+                    <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="recentRecordsTable">
+                  <tr>
+                    <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Department Progress Chart -->
+          <div class="xl:col-span-1 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-8">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">By Department</h3>
+              <span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+            </div>
+            <div class="flex-1 flex flex-col gap-6 justify-center" id="departmentProgress">
+              <!-- Progress bars will be populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          <!-- Category Distribution Chart -->
+          <div class="flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Category Distribution</h3>
+            </div>
+            <div class="p-6">
+              <div class="h-64">
+                <canvas id="categoryChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Chart -->
+          <div class="flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Trend (Last 30 Days)</h3>
+            </div>
+            <div class="p-6">
+              <div class="h-64">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Section -->
+        <div class="mt-8">
+          <div class="flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Recent Activity</h3>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800" id="activityList">
+              <div class="px-6 py-8 text-center text-slate-400 text-sm">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="h-10 border-t border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between bg-white dark:bg-slate-900/50">
+        <p class="text-[10px] text-slate-400 font-medium tracking-tight uppercase">DataOps Manager v1.0.0</p>
+        <p class="text-[10px] text-slate-400 font-medium tracking-tight uppercase" id="lastSync">Last Sync: Just Now</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

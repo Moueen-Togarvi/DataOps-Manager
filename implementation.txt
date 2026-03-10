@@ -1,0 +1,221 @@
+You are a senior full-stack engineer and system architect.
+
+Your task is to design and implement a lightweight ERP-style internal data management dashboard. The system will replace a manual workflow currently managed through Word and Excel documents.
+
+The goal is to build a structured, scalable, and professional system focused on operational data entry, analytics, and reporting.
+
+SYSTEM OBJECTIVE
+
+Create a cloud-based internal dashboard application that allows structured record management, automated calculations, analytics dashboards, and detailed reporting.
+
+The system must be lightweight, fast, and usable on desktop and mobile devices.
+
+TARGET USERS
+
+1 Admin
+2 Data Entry Users
+
+Admin permissions:
+
+* Full CRUD access
+* User management
+* Record editing
+* Activity logs
+* Report generation
+
+Data Entry permissions:
+
+* Add records
+* View assigned data
+* Limited editing access
+
+TECH STACK REQUIREMENTS
+
+Backend:
+nodejs
+
+Frontend:
+html css javascript not react
+
+Database:
+mongodb
+
+Charts:
+Chart.js or Apache ECharts
+
+File Handling:
+ Excel/CSV processing
+
+PDF Generation:
+WeasyPrint or equivalent
+
+Deployment:
+Cloud hosted but accessible via:
+
+* Public internet
+* Local WiFi network
+
+Local Backup: it is importnat very mandatory
+Daily automated database backup exportable to local hard drive.
+
+CORE FEATURES
+
+1. Structured Data Entry Forms
+
+* Department
+* Unit
+* Category
+* Date
+* Record status
+* Calculated values
+* Notes
+
+2. Automated Calculations
+
+* Total records received
+* Total records processed
+* Pending / balance records
+* Category totals
+* Issue/discrepancy cases
+
+3. Dashboard Analytics
+
+Dashboard must include analytics cards showing:
+
+* Total Records Received
+* Total Records Processed
+* Pending Records
+* Category Distribution
+* Total Calculated Values
+* Discrepancy Cases
+
+Each dashboard card must support drill-down behavior:
+Clicking a card opens a detailed analytical report page with tables and charts.
+
+4. Reporting System
+
+Reports must support filtering by:
+
+* Department
+* Category
+* Date Range
+* Daily
+* Weekly
+* Monthly
+* Custom Range
+
+Reports must include:
+
+* Table view
+* Chart view
+* Export options
+
+5. Import / Export
+
+Import:
+
+* Excel (.xlsx)
+* CSV
+
+Export:
+
+* Excel
+* PDF
+
+6. Printable Official Forms
+
+The system must generate printable documents identical to existing report layouts.
+
+Printed forms must maintain strict formatting for official reporting.
+
+7. Search & Historical Records
+
+Features required:
+
+* Full record search
+* Date filters
+* Department filters
+* Category filters
+* Pagination for large datasets
+
+8. User Activity Logging
+
+Track:
+
+* Login
+* Record creation
+* Record edits
+* Report exports
+* Data imports
+
+Logs must be visible to Admin only.
+
+UI / UX DESIGN RULES (STRICT)
+
+The interface must follow strict professional design guidelines.
+
+Do NOT generate AI-style UI.
+
+Do NOT use generic AI-generated color palettes.
+
+Design must follow these principles:
+
+1. Minimal professional dashboard style.
+2. Unique premium color palette.
+3. Clean spacing and grid alignment.
+4. Consistent typography hierarchy.
+5. Clear information density suitable for enterprise dashboards.
+
+F
+Design characteristics required:
+
+* Minimal
+* premium , svg icons 
+* Enterprise grade
+* Practical
+* Data-first layout
+* Fast loading
+
+Emojis are NOT allowed anywhere in the interface.low level colours, futuristic colours or design neon colours, are not allowed its my big restriction are u understaan and also ai genrted colours 
+
+
+MOBILE SUPPORT
+
+The interface must work on mobile devices because some records will be entered from field locations.
+
+Mobile requirements:
+
+* Responsive layout
+* Simplified forms
+* Touch-friendly inputs
+* Collapsible dashboard cards
+
+PERFORMANCE REQUIREMENTS
+
+* Fast page load
+* Optimized database queries
+* Pagination for large data tables
+* Lazy loading charts where necessary
+
+SCALABILITY
+
+Architecture must allow future modules such as:
+
+* Department management
+* Document attachments
+* Role-based permissions expansion
+* API integrations
+
+DELIVERABLES
+
+1. Database schema
+2. Backend API
+3. Frontend dashboard
+4. Reporting engine
+5. Excel/CSV import system
+6. PDF export system
+7. Printable report templates
+8. Deployment instructions
+
+The system must be structured in modular architecture and follow clean coding practices.
+

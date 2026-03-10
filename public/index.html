@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>DataOps Manager - Login</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#3c83f6",
+            "background-light": "#f8fafc",
+            "background-dark": "#101722",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col">
+  <div class="flex-1 flex items-center justify-center p-6">
+    <div class="w-full max-w-[440px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded shadow-sm overflow-hidden">
+      <!-- Header/Branding -->
+      <div class="pt-10 px-8 pb-6 flex flex-col items-center">
+        <div class="w-12 h-12 bg-primary flex items-center justify-center rounded mb-6">
+          <span class="material-symbols-outlined text-white text-3xl">analytics</span>
+        </div>
+        <h1 class="text-slate-900 dark:text-slate-100 text-2xl font-bold tracking-tight">DataOps Manager</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Management Information System</p>
+      </div>
+      <!-- Login Form -->
+      <div class="px-8 pb-10">
+        <div class="mb-6">
+          <h2 class="text-slate-900 dark:text-slate-100 text-lg font-semibold mb-1">Sign in to your account</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">Please enter your credentials</p>
+        </div>
+        <form id="loginForm" class="space-y-5">
+          <!-- Username/Email -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-slate-700 dark:text-slate-300 text-sm font-medium" for="username">Username</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">person</span>
+              <input
+                class="w-full pl-10 pr-4 h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                required
+                autocomplete="username"
+              />
+            </div>
+          </div>
+          <!-- Password -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex justify-between items-center">
+              <label class="text-slate-700 dark:text-slate-300 text-sm font-medium" for="password">Password</label>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock</span>
+              <input
+                class="w-full pl-10 pr-12 h-11 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                required
+                autocomplete="current-password"
+              />
+              <button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" type="button" id="togglePassword">
+                <span class="material-symbols-outlined text-xl">visibility</span>
+              </button>
+            </div>
+          </div>
+          <!-- Remember Me -->
+          <div class="flex items-center gap-2 py-1">
+            <input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" id="remember" type="checkbox"/>
+            <label class="text-slate-600 dark:text-slate-400 text-sm cursor-pointer select-none" for="remember">Remember this device</label>
+          </div>
+          <!-- Error Message -->
+          <div class="form-error text-red-600 dark:text-red-400 text-sm hidden" id="formError"></div>
+          <!-- Submit Button -->
+          <button class="w-full bg-primary hover:bg-primary/90 text-white h-11 rounded font-semibold text-sm transition-colors shadow-sm mt-2 flex items-center justify-center gap-2" type="submit" id="loginBtn">
+            <span class="btn-text">Sign In</span>
+            <span class="btn-loading hidden items-center gap-2">
+              <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 2.21.895 4.21 2.338 5.645l1.662-1.354z"></path>
+              </svg>
+              Signing in...
+            </span>
+          </button>
+        </form>
+      </div>
+      <!-- Security Footer -->
+      <div class="bg-slate-50 dark:bg-slate-800/50 px-8 py-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+        <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+          <span class="material-symbols-outlined text-sm">verified_user</span>
+          <span class="text-[10px] uppercase tracking-wider font-bold">Security Protocol: Active</span>
+        </div>
+        <div class="text-slate-400 dark:text-slate-500 text-[10px] font-medium">
+          DataOps v1.0.0
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page Footer -->
+  <footer class="p-8 text-center">
+    <p class="text-slate-400 dark:text-slate-500 text-xs">
+      DataOps Manager - Internal Data Management System
+    </p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Check if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Auth.isLoggedIn()) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('password');
+      const icon = this.querySelector('.material-symbols-outlined');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        passwordInput.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    });
+
+    // Handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const formError = document.getElementById('formError');
+      const loginBtn = document.getElementById('loginBtn');
+
+      // Reset error
+      formError.classList.add('hidden');
+      formError.textContent = '';
+
+      // Show loading state
+      loginBtn.disabled = true;
+      loginBtn.querySelector('.btn-text').classList.add('hidden');
+      loginBtn.querySelector('.btn-loading').classList.remove('hidden');
+      loginBtn.querySelector('.btn-loading').classList.add('flex');
+
+      try {
+        await Auth.login(username, password);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        formError.textContent = error.message || 'Login failed. Please try again.';
+        formError.classList.remove('hidden');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.querySelector('.btn-text').classList.remove('hidden');
+        loginBtn.querySelector('.btn-loading').classList.add('hidden');
+        loginBtn.querySelector('.btn-loading').classList.remove('flex');
+      }
+    });
+  </script>
+</body>
+</html>
