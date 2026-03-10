@@ -256,6 +256,8 @@ function renderPagination(pagination) {
     return;
   }
 
+  let html = '';
+
   // Previous button
   html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
 

@@ -142,22 +142,39 @@
                 <span class="font-medium" id="dateRangeDisplay">This Month</span>
               </div>
               <div id="customDateInputs" class="hidden flex items-center gap-2">
-                <input type="date" id="dateFrom" class="h-9 px-3 border border-slate-200 dark:border-slate-700 rounded text-sm bg-white dark:bg-slate-900"/>
-                <span class="text-slate-400">to</span>
-                <input type="date" id="dateTo" class="h-9 px-3 border border-slate-200 dark:border-slate-700 rounded text-sm bg-white dark:bg-slate-900"/>
+                <input type="date" id="dateFrom" class="h-8 px-2 border border-slate-200 dark:border-slate-700 rounded text-xs bg-white dark:bg-slate-900 focus:ring-1 focus:ring-primary/20 outline-none"/>
+                <span class="text-slate-400 text-xs text-xs font-bold uppercase tracking-wider">to</span>
+                <input type="date" id="dateTo" class="h-8 px-2 border border-slate-200 dark:border-slate-700 rounded text-xs bg-white dark:bg-slate-900 focus:ring-1 focus:ring-primary/20 outline-none"/>
               </div>
             </div>
           </div>
-          <div class="flex flex-wrap gap-3">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <div>
-              <label class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Department</label>
-              <select class="flex h-9 items-center gap-4 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm min-w-[160px]" id="departmentFilter">
+              <label class="text-[9px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Department</label>
+              <select class="w-full h-8 px-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:ring-1 focus:ring-primary/20 outline-none" id="departmentFilter">
                 <option value="">All Departments</option>
               </select>
             </div>
             <div>
-              <label class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Status</label>
-              <select class="flex h-9 items-center gap-4 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm min-w-[140px]" id="statusFilter">
+              <label class="text-[9px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Unit</label>
+              <select class="w-full h-8 px-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:ring-1 focus:ring-primary/20 outline-none" id="unitFilter">
+                <option value="">All Units</option>
+                <option value="Headquarters">Headquarters</option>
+                <option value="Branch North">Branch North</option>
+                <option value="Branch South">Branch South</option>
+                <option value="Online">Online</option>
+                <option value="Field Ops">Field Ops</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[9px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Category</label>
+              <select class="w-full h-8 px-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:ring-1 focus:ring-primary/20 outline-none" id="categoryFilter">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[9px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Status</label>
+              <select class="w-full h-8 px-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:ring-1 focus:ring-primary/20 outline-none" id="statusFilter">
                 <option value="">All Statuses</option>
                 <option value="received">Received</option>
                 <option value="pending">Pending</option>
@@ -166,8 +183,8 @@
               </select>
             </div>
             <div>
-              <label class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Report Type</label>
-              <select class="flex h-9 items-center gap-4 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm min-w-[140px]" id="reportType">
+              <label class="text-[9px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Report Type</label>
+              <select class="w-full h-8 px-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium focus:ring-1 focus:ring-primary/20 outline-none" id="reportType">
                 <option value="summary">Summary</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -177,8 +194,8 @@
               </select>
             </div>
             <div class="flex items-end">
-              <button class="h-9 px-4 bg-primary text-white text-sm font-semibold rounded flex items-center gap-2 hover:bg-primary/90" id="generateReportBtn">
-                <span class="material-symbols-outlined text-sm">sync</span>
+              <button class="w-full h-8 px-3 bg-primary text-white text-[11px] font-bold rounded flex items-center justify-center gap-1.5 hover:bg-primary/90 transition-all uppercase tracking-wider shadow-sm" id="generateReportBtn">
+                <span class="material-symbols-outlined !text-[14px]">sync</span>
                 Generate
               </button>
             </div>

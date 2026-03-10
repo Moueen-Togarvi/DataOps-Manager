@@ -202,7 +202,7 @@ async function openUserModal(user = null) {
     document.getElementById('userUsername').value = user.username;
     document.getElementById('userEmail').value = user.email;
     document.getElementById('userPassword').value = '';
-    document.getElementById('userRole').value = user.role;
+    document.getElementById('userFormRole').value = user.role;
     document.getElementById('userDepartment').value = user.department?._id || '';
     document.getElementById('userActive').value = user.active.toString();
   } else {
@@ -219,7 +219,7 @@ async function saveUser() {
   const data = {
     username: document.getElementById('userUsername').value,
     email: document.getElementById('userEmail').value,
-    role: document.getElementById('userRole').value,
+    role: document.getElementById('userFormRole').value,
     department: document.getElementById('userDepartment').value || null,
     active: document.getElementById('userActive').value === 'true',
   };

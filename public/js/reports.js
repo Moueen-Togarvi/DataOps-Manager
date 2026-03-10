@@ -56,9 +56,10 @@ async function loadDepartments() {
 /**
  * Load categories for filter
  */
-async function loadCategories() {
+async function loadCategories(departmentId = '') {
   try {
-    const response = await API.categories.getAll();
+    const params = departmentId ? { department: departmentId } : {};
+    const response = await API.categories.getAll(params);
     if (response.success) {
       const select = document.getElementById('categoryFilter');
       if (select) {
@@ -109,6 +110,16 @@ function setupEventListeners() {
 
   // Generate report button
   document.getElementById('generateReportBtn')?.addEventListener('click', generateReport);
+
+  // Filter change auto-generate
+  ['departmentFilter', 'unitFilter', 'categoryFilter', 'statusFilter', 'reportType'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', () => {
+      if (id === 'departmentFilter') {
+        loadCategories(document.getElementById(id).value);
+      }
+      generateReport();
+    });
+  });
 
   // Export & Print
   document.getElementById('exportExcelBtn')?.addEventListener('click', () => {
@@ -193,6 +204,9 @@ function getReportParams() {
 
   const department = document.getElementById('departmentFilter')?.value;
   if (department) params.department = department;
+
+  const unit = document.getElementById('unitFilter')?.value;
+  if (unit) params.unit = unit;
 
   const category = document.getElementById('categoryFilter')?.value;
   if (category) params.category = category;
