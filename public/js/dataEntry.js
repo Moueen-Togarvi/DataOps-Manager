@@ -165,10 +165,7 @@ function updateCalculations() {
     pendingEl.classList.add('text-amber-200');
   }
 
-  document.getElementById('calcValue').textContent = '$' + value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  document.getElementById('calcValue').textContent = Utils.formatCurrency(value);
 }
 
 /**

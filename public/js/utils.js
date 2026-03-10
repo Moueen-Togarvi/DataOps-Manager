@@ -48,11 +48,13 @@ const Utils = {
   /**
    * Format currency
    */
-  formatCurrency(amount, currency = 'USD') {
-    if (amount === null || amount === undefined) return '$0.00';
-    return Number(amount).toLocaleString('en-US', {
+  formatCurrency(amount, currency = 'PKR') {
+    if (amount === null || amount === undefined) return 'Rs. 0.00';
+    return Number(amount).toLocaleString('en-PK', {
       style: 'currency',
       currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
   },
 
