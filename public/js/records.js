@@ -47,21 +47,18 @@ async function loadDepartments() {
     if (response.success) {
       departments = response.data;
 
-      // Populate dropdowns
-      const selects = ['departmentFilter', 'department'];
-      selects.forEach((id) => {
-        const select = document.getElementById(id);
-        if (select) {
-          const currentValue = select.value;
-          select.innerHTML =
-            '<option value="">Select Department</option>' +
-            departments
-              .filter((d) => d.active)
-              .map((d) => `<option value="${d._id}">${d.name}</option>`)
-              .join('');
-          select.value = currentValue;
-        }
-      });
+      // Populate filter dropdown
+      const select = document.getElementById('departmentFilter');
+      if (select) {
+        const currentValue = select.value;
+        select.innerHTML =
+          '<option value="">All Departments</option>' +
+          departments
+            .filter((d) => d.active)
+            .map((d) => `<option value="${d._id}">${d.name}</option>`)
+            .join('');
+        select.value = currentValue;
+      }
     }
   } catch (error) {
     handleApiError(error, 'Failed to load departments');
@@ -82,7 +79,7 @@ async function loadCategories() {
       if (select) {
         const currentValue = select.value;
         select.innerHTML =
-          '<option value="">Select Category</option>' +
+          '<option value="">All Categories</option>' +
           categories
             .filter((c) => c.active)
             .map((c) => `<option value="${c._id}">${c.name}</option>`)
@@ -92,35 +89,6 @@ async function loadCategories() {
     }
   } catch (error) {
     handleApiError(error, 'Failed to load categories');
-  }
-}
-
-/**
- * Update modal category dropdown based on department
- */
-function updateCategoryDropdown(departmentId, selectedCategoryId = '') {
-  const categorySelect = document.getElementById('category');
-  if (!categorySelect) return;
-
-  categorySelect.innerHTML = '<option value="">Select Category</option>';
-  
-  if (!departmentId) {
-    categorySelect.disabled = true;
-    return;
-  }
-  
-  categorySelect.disabled = false;
-
-  const deptCategories = categories.filter(c => 
-    c.active && (c.department === departmentId || c.department?._id === departmentId || !c.department)
-  );
-  
-  categorySelect.innerHTML += deptCategories
-    .map(c => `<option value="${c._id}">${c.name}</option>`)
-    .join('');
-
-  if (selectedCategoryId) {
-    categorySelect.value = selectedCategoryId;
   }
 }
 
@@ -186,13 +154,10 @@ function renderRecords(records) {
     tbody.innerHTML = `
       <tr>
         <td colspan="11" class="text-center">
-          <div class="empty-state">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-            </svg>
-            <h3>No records found</h3>
-            <p>Add a new record or adjust your filters</p>
+          <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+            <span class="material-symbols-outlined text-4xl mb-2">inventory_2</span>
+            <h3 class="text-sm font-semibold">No records found</h3>
+            <p class="text-xs">Add a new record or adjust your filters</p>
           </div>
         </td>
       </tr>
@@ -241,7 +206,6 @@ function renderPagination(pagination) {
   const infoEl = document.getElementById('paginationInfo');
   if (!container || !pagination) return;
 
-  // Backend returns: { page, limit, total, pages }
   totalPages = pagination.pages;
   currentPage = pagination.page;
 
@@ -289,25 +253,6 @@ function renderPagination(pagination) {
  * Setup event listeners
  */
 function setupEventListeners() {
-  // Add record button
-  document.getElementById('addRecordBtn')?.addEventListener('click', () => openRecordModal());
-
-  // Modal close buttons
-  document.querySelectorAll('.modal-close').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.getElementById('recordModal')?.classList.remove('active');
-      document.getElementById('importModal')?.classList.remove('active');
-    });
-  });
-
-  // Save record
-  document.getElementById('saveRecordBtn')?.addEventListener('click', saveRecord);
-
-  // Department change updates categories dropdown
-  document.getElementById('department')?.addEventListener('change', (e) => {
-    updateCategoryDropdown(e.target.value);
-  });
-
   // Search with debounce
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
@@ -353,34 +298,20 @@ function setupEventListeners() {
     });
   });
 
-  // Import button
-  document.getElementById('importBtn')?.addEventListener('click', () => {
-    document.getElementById('importModal')?.classList.add('active');
-  });
-
-  // Import file change
-  document.getElementById('importFile')?.addEventListener('change', handleImportFile);
-
-  // Confirm import
-  document.getElementById('confirmImportBtn')?.addEventListener('click', confirmImport);
-
-  // Download template
-  document.getElementById('downloadTemplateBtn')?.addEventListener('click', downloadTemplate);
-
   // Export button
   document.getElementById('exportBtn')?.addEventListener('click', () => {
     API.export.excel(getFilterParams());
   });
 
-  // Calculate pending records
-  const receivedInput = document.getElementById('recordsReceived');
-  const processedInput = document.getElementById('recordsProcessed');
+  // Import button (Trigger modal in records.html)
+  document.getElementById('importBtn')?.addEventListener('click', () => {
+    document.getElementById('importModal')?.classList.add('active');
+  });
 
-  [receivedInput, processedInput].forEach((input) => {
-    input?.addEventListener('input', () => {
-      const received = parseInt(receivedInput?.value) || 0;
-      const processed = parseInt(processedInput?.value) || 0;
-      // Could show pending in a separate field or update calculated value
+  // Modal close buttons
+  document.querySelectorAll('.modal-close').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.getElementById('importModal')?.classList.remove('active');
     });
   });
 }
@@ -401,13 +332,14 @@ async function handleTableAction(e) {
 
   if (deleteBtn) {
     const id = deleteBtn.dataset.id;
-    const confirmed = await Utils.confirm('Are you sure you want to delete this record?', 'Delete Record');
+    const confirmed = await Utils.confirm('This will permanently remove the record from the ledger. Are you sure?', 'Delete Operation');
     if (confirmed) {
       try {
         const response = await API.records.delete(id);
         if (response.success) {
           Utils.showToast('Record deleted successfully', 'success');
           loadRecords();
+          loadRecordsStats();
         }
       } catch (error) {
         handleApiError(error, 'Failed to delete record');
@@ -429,110 +361,37 @@ async function handleTableAction(e) {
  * Clear all filters
  */
 function clearFilters() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('departmentFilter').value = '';
-  document.getElementById('categoryFilter').value = '';
-  document.getElementById('statusFilter').value = '';
-  document.getElementById('dateFromFilter').value = '';
-  document.getElementById('dateToFilter').value = '';
+  ['searchInput', 'departmentFilter', 'categoryFilter', 'statusFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   currentPage = 1;
   loadRecords();
 }
 
 /**
- * Handle import file selection
+ * Global API Error handler
  */
-async function handleImportFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+function handleApiError(error, defaultMessage) {
+  console.error(error);
+  const message = error.message || defaultMessage;
+  Utils.showToast(message, 'error');
+}
 
-  try {
-    const response = await API.import.upload(file);
-
-    if (response.success) {
-      showImportPreview(response.data);
-      document.getElementById('confirmImportBtn').disabled = false;
-    }
-  } catch (error) {
-    handleApiError(error, 'Failed to parse file');
-    document.getElementById('confirmImportBtn').disabled = true;
+/**
+ * Loading states
+ */
+function showLoading() {
+  const tbody = document.getElementById('recordsTableBody');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="11" class="px-6 py-8 text-center text-slate-400 text-sm">Loading records...</td></tr>';
   }
 }
 
-/**
- * Show import preview
- */
-function showImportPreview(data) {
-  const preview = document.getElementById('importPreview');
-  const table = document.getElementById('importPreviewTable');
+function hideLoading() {}
 
-  if (!preview || !table) return;
-
-  if (!data || data.length === 0) {
-    preview.classList.add('hidden');
-    return;
-  }
-
-  // Create header
-  const headers = Object.keys(data[0]);
-  let html = '<thead><tr>' + headers.map((h) => `<th>${h}</th>`).join('') + '</tr></thead>';
-
-  // Create body (show first 10 rows)
-  html += '<tbody>';
-  data.slice(0, 10).forEach((row) => {
-    html += '<tr>' + headers.map((h) => `<td>${row[h] || ''}</td>`).join('') + '</tr>';
-  });
-  if (data.length > 10) {
-    html += `<tr><td colspan="${headers.length}" class="text-center text-muted">... and ${data.length - 10} more rows</td></tr>`;
-  }
-  html += '</tbody>';
-
-  table.innerHTML = html;
-  preview.classList.remove('hidden');
-}
-
-/**
- * Confirm import
- */
-async function confirmImport() {
-  // This would typically save the imported data
-  Utils.showToast('Import functionality requires server-side handling', 'info');
-  document.getElementById('importModal')?.classList.remove('active');
-}
-
-/**
- * Download import template
- */
-function downloadTemplate() {
-  const template = [
-    {
-      departmentCode: 'OPS',
-      unit: 'Unit Name',
-      categoryCode: 'CAT1',
-      date: '2024-01-15',
-      recordsReceived: 100,
-      recordsProcessed: 95,
-      status: 'processed',
-      calculatedValue: 0,
-      notes: 'Optional notes',
-    },
-  ];
-
-  const csv = Utils.tableToCSV ? createCSV(template) : '';
-  const blob = new Blob([csv], { type: 'text/csv' });
-  Utils.downloadBlob(blob, 'import_template.csv');
-}
-
-/**
- * Create CSV from data
- */
-function createCSV(data) {
-  if (!data || data.length === 0) return '';
-
-  const headers = Object.keys(data[0]);
-  const rows = data.map((row) => headers.map((h) => `"${row[h] || ''}"`).join(','));
-  return [headers.join(','), ...rows].join('\n');
-}
+// Initialize on DOM content loaded
+document.addEventListener('DOMContentLoaded', initRecords);
 
 // Make functions available globally
 window.initRecords = initRecords;
