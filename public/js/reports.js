@@ -1,6 +1,5 @@
 /**
  * DataOps Manager - Reports Page Logic
- * Handles report generation and visualization
  */
 
 // Chart instances
@@ -9,6 +8,9 @@ let statusChartInstance = null;
 
 // Report data cache
 let reportData = null;
+let currentPeriod = 'monthly';
+
+document.addEventListener('DOMContentLoaded', initReports);
 
 /**
  * Initialize reports page
@@ -16,8 +18,17 @@ let reportData = null;
 async function initReports() {
   await loadDepartments();
   await loadCategories();
+  
+  // Check for status in URL (drill-down from dashboard)
+  const urlParams = new URLSearchParams(window.location.search);
+  const status = urlParams.get('status');
+  if (status) {
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) statusFilter.value = status;
+  }
+
   setupEventListeners();
-  generateReport(); // Generate default report
+  generateReport(); 
 }
 
 /**
@@ -68,45 +79,40 @@ async function loadCategories() {
  * Setup event listeners
  */
 function setupEventListeners() {
-  // Report type change
-  document.getElementById('reportType')?.addEventListener('change', (e) => {
-    const type = e.target.value;
-    // Show/hide department/category filters based on type
-    const deptFilter = document.getElementById('departmentFilter')?.closest('.filter-group');
-    const catFilter = document.getElementById('categoryFilter')?.closest('.filter-group');
+  // Period buttons
+  document.querySelectorAll('.report-period').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      // Update UI
+      document.querySelectorAll('.report-period').forEach(b => {
+        b.classList.remove('bg-white', 'dark:bg-slate-700', 'text-primary', 'shadow-sm');
+        b.classList.add('text-slate-500', 'dark:text-slate-400');
+      });
+      btn.classList.add('bg-white', 'dark:bg-slate-700', 'text-primary', 'shadow-sm');
+      btn.classList.remove('text-slate-500', 'dark:text-slate-400');
 
-    if (deptFilter) {
-      deptFilter.style.display = type === 'department' ? 'block' : 'block';
-    }
-    if (catFilter) {
-      catFilter.style.display = type === 'category' ? 'block' : 'block';
-    }
-  });
-
-  // Date range change
-  document.getElementById('dateRange')?.addEventListener('change', (e) => {
-    const value = e.target.value;
-    const customFrom = document.getElementById('customDateRange');
-    const customTo = document.getElementById('customDateRangeTo');
-
-    if (customFrom && customTo) {
-      if (value === 'custom') {
-        customFrom.style.display = 'block';
-        customTo.style.display = 'block';
-      } else {
-        customFrom.style.display = 'none';
-        customTo.style.display = 'none';
+      currentPeriod = btn.dataset.period;
+      
+      // Show/hide custom date inputs
+      const customInputs = document.getElementById('customDateInputs');
+      if (customInputs) {
+        if (currentPeriod === 'custom') {
+          customInputs.classList.remove('hidden');
+        } else {
+          customInputs.classList.add('hidden');
+        }
       }
-    }
+
+      updateDateDisplay();
+      generateReport();
+    });
   });
 
   // Generate report button
   document.getElementById('generateReportBtn')?.addEventListener('click', generateReport);
 
-  // Export buttons
+  // Export & Print
   document.getElementById('exportExcelBtn')?.addEventListener('click', () => {
-    const params = getReportParams();
-    API.export.excel(params);
+    API.export.excel(getReportParams());
   });
 
   document.getElementById('exportPdfBtn')?.addEventListener('click', () => {
@@ -119,39 +125,48 @@ function setupEventListeners() {
 }
 
 /**
+ * Update the human-readable date display
+ */
+function updateDateDisplay() {
+  const display = document.getElementById('dateRangeDisplay');
+  if (!display) return;
+
+  const { startDate, endDate } = getDateRange();
+  
+  if (currentPeriod === 'daily') {
+    display.textContent = 'Today (' + Utils.formatDate(startDate) + ')';
+  } else if (currentPeriod === 'weekly') {
+    display.textContent = 'This Week';
+  } else if (currentPeriod === 'monthly') {
+    display.textContent = 'This Month';
+  } else if (currentPeriod === 'custom') {
+    if (startDate && endDate) {
+      display.textContent = `${Utils.formatDate(startDate)} - ${Utils.formatDate(endDate)}`;
+    } else {
+      display.textContent = 'Select Dates';
+    }
+  }
+}
+
+/**
  * Get date range from selection
  */
 function getDateRange() {
-  const range = document.getElementById('dateRange')?.value;
   const today = new Date();
   let startDate, endDate;
 
-  switch (range) {
-    case 'today':
+  switch (currentPeriod) {
+    case 'daily':
       startDate = endDate = today.toISOString().split('T')[0];
       break;
-    case 'yesterday':
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      startDate = endDate = yesterday.toISOString().split('T')[0];
-      break;
-    case 'week':
+    case 'weekly':
       const weekStart = new Date(today);
-      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      weekStart.setDate(weekStart.getDate() - today.getDay());
       startDate = weekStart.toISOString().split('T')[0];
       endDate = today.toISOString().split('T')[0];
       break;
-    case 'month':
+    case 'monthly':
       startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-      endDate = today.toISOString().split('T')[0];
-      break;
-    case 'quarter':
-      const quarter = Math.floor(today.getMonth() / 3);
-      startDate = new Date(today.getFullYear(), quarter * 3, 1).toISOString().split('T')[0];
-      endDate = today.toISOString().split('T')[0];
-      break;
-    case 'year':
-      startDate = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
       endDate = today.toISOString().split('T')[0];
       break;
     case 'custom':
@@ -159,7 +174,6 @@ function getDateRange() {
       endDate = document.getElementById('dateTo')?.value;
       break;
     default:
-      // Default to month
       startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
       endDate = today.toISOString().split('T')[0];
   }
@@ -182,6 +196,9 @@ function getReportParams() {
 
   const category = document.getElementById('categoryFilter')?.value;
   if (category) params.category = category;
+
+  const status = document.getElementById('statusFilter')?.value;
+  if (status) params.status = status;
 
   return params;
 }

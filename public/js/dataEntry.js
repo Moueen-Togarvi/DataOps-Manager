@@ -175,7 +175,9 @@ function updateCalculations() {
  * Change status and update visual badges
  */
 function setStatus(statusValue) {
-  document.getElementById('recordStatus').value = statusValue;
+  const statusSelect = document.getElementById('recordStatus');
+  if (statusSelect) statusSelect.value = statusValue;
+  
   document.querySelectorAll('.status-badge').forEach(btn => {
     if (btn.dataset.status === statusValue) {
       btn.classList.add('active');
@@ -204,6 +206,11 @@ function setupEventListeners() {
     btn.addEventListener('click', (e) => {
       setStatus(e.target.dataset.status);
     });
+  });
+
+  // Status select change
+  document.getElementById('recordStatus')?.addEventListener('change', (e) => {
+    setStatus(e.target.value);
   });
 
   // Save record

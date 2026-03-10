@@ -219,17 +219,11 @@ function renderRecords(records) {
       <td class="px-6 py-4">${Utils.getStatusBadge(record.status)}</td>
       <td class="px-6 py-4 text-right">
         <div class="flex justify-end gap-2">
-          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-colors edit-btn" data-id="${record._id}" title="Edit">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
+          <button class="p-1.5 text-slate-400 hover:text-primary hover:bg-blue-50 dark:hover:bg-slate-700 rounded transition-colors edit-btn" data-id="${record._id}" title="Edit">
+            <span class="material-symbols-outlined !text-[18px]">edit</span>
           </button>
-          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg transition-colors delete-btn" data-id="${record._id}" title="Delete">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
+          <button class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded transition-colors delete-btn" data-id="${record._id}" title="Delete">
+            <span class="material-symbols-outlined !text-[18px]">delete</span>
           </button>
         </div>
       </td>
@@ -262,31 +256,29 @@ function renderPagination(pagination) {
     return;
   }
 
-  let html = '';
-
   // Previous button
-  html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
+  html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
 
   // Page numbers
   const startPage = Math.max(1, currentPage - 2);
   const endPage = Math.min(totalPages, currentPage + 2);
 
   if (startPage > 1) {
-    html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" data-page="1">1</button>`;
+    html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-100 dark:hover:bg-slate-800" data-page="1">1</button>`;
     if (startPage > 2) html += `<span class="px-2 py-1.5 text-xs text-slate-400">...</span>`;
   }
 
   for (let i = startPage; i <= endPage; i++) {
-    html += `<button class="px-3 py-1.5 text-xs font-medium border rounded-lg ${i === currentPage ? 'bg-primary text-white border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${i}">${i}</button>`;
+    html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border rounded ${i === currentPage ? 'bg-primary text-white border-primary' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${i}">${i}</button>`;
   }
 
   if (endPage < totalPages) {
     if (endPage < totalPages - 1) html += `<span class="px-2 py-1.5 text-xs text-slate-400">...</span>`;
-    html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" data-page="${totalPages}">${totalPages}</button>`;
+    html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-100 dark:hover:bg-slate-800" data-page="${totalPages}">${totalPages}</button>`;
   }
 
   // Next button
-  html += `<button class="px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+  html += `<button class="pagination-btn px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
 
   container.innerHTML = html;
 }

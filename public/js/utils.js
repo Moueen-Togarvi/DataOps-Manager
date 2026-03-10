@@ -236,35 +236,55 @@ const Utils = {
   /**
    * Show confirmation dialog
    */
-  async confirm(message, title = 'Confirm') {
+  async confirm(message, title = 'Confirm Action') {
     return new Promise((resolve) => {
+      // Remove existing modal if any
+      const existing = document.getElementById('customConfirmModal');
+      if (existing) existing.remove();
+
       const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay active';
+      overlay.id = 'customConfirmModal';
+      overlay.className = 'fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[100] animate-in fade-in duration-200';
       overlay.innerHTML = `
-        <div class="modal">
-          <div class="modal-header">
-            <h3>${title}</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden transform transition-all scale-95 opacity-0 duration-200" id="confirmBox">
+          <div class="p-6">
+            <div class="size-12 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-red-600">warning</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">${title}</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">${message}</p>
           </div>
-          <div class="modal-body">
-            <p>${message}</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
-            <button class="btn btn-danger" id="confirmOk">Confirm</button>
+          <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3">
+            <button class="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" id="confirmCancel">Cancel</button>
+            <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg shadow-sm shadow-red-200 dark:shadow-none transition-colors" id="confirmOk">Delete Record</button>
           </div>
         </div>
       `;
 
       document.body.appendChild(overlay);
+      
+      // Trigger animation
+      setTimeout(() => {
+        const box = document.getElementById('confirmBox');
+        if (box) box.classList.remove('scale-95', 'opacity-0');
+      }, 10);
 
-      overlay.querySelector('#confirmCancel').addEventListener('click', () => {
-        overlay.remove();
-        resolve(false);
-      });
+      const close = (result) => {
+        const box = document.getElementById('confirmBox');
+        if (box) box.classList.add('scale-95', 'opacity-0');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.remove();
+          resolve(result);
+        }, 200);
+      };
 
-      overlay.querySelector('#confirmOk').addEventListener('click', () => {
-        overlay.remove();
-        resolve(true);
+      overlay.querySelector('#confirmCancel').addEventListener('click', () => close(false));
+      overlay.querySelector('#confirmOk').addEventListener('click', () => close(true));
+      
+      // Close on backdrop click
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close(false);
       });
     });
   },

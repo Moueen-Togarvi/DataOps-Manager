@@ -122,19 +122,18 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
           <!-- Page Header -->
-          <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div class="flex flex-col gap-1.5">
-              <h1 class="text-[28px] font-bold text-slate-900 tracking-tight">New Record Entry</h1>
-              <p class="text-slate-500 text-sm">Populate the centralized ledger with department and category operational data.</p>
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 mb-4">
+            <div class="flex flex-col gap-0.5">
+              <h1 class="text-xl font-bold text-slate-900 tracking-tight">New Record Entry</h1>
+              <p class="text-slate-500 text-[10px]">Populate the centralized ledger with department and category operational data.</p>
             </div>
-            <div class="flex flex-col items-end gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-1">Status:</span>
-                <button type="button" class="status-badge active px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border" data-status="received">Received</button>
-                <button type="button" class="status-badge px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border" data-status="pending">Pending</button>
-                <button type="button" class="status-badge px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border" data-status="processed">Processed</button>
-                <button type="button" class="status-badge px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border" data-status="discrepancy">Discrepancy</button>
-                <input type="hidden" id="recordStatus" value="received">
+            <div class="flex flex-col items-end gap-1">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mr-1">Quick Status:</span>
+                <button type="button" class="status-badge active px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider border" data-status="received">Received</button>
+                <button type="button" class="status-badge px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider border" data-status="pending">Pending</button>
+                <button type="button" class="status-badge px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider border" data-status="processed">Processed</button>
+                <button type="button" class="status-badge px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider border" data-status="discrepancy">Discrepancy</button>
               </div>
             </div>
           </div>
@@ -147,19 +146,38 @@
               <form id="recordForm" class="flex flex-col gap-6">
                 <!-- Card 1: Classification -->
                 <div class="bg-white border border-slate-200 rounded-xl shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-                  <div class="px-6 py-5 border-b border-slate-100">
-                    <h3 class="text-sm font-bold text-slate-800">Classification Details</h3>
+                  <div class="px-5 py-3 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-bold text-slate-800">Classification Details</h3>
                   </div>
-                  <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                  <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-3">
                     <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Department</label>
-                      <select class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm appearance-none" id="department" required>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Status <span class="text-red-500">*</span></label>
+                      <select class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm appearance-none font-medium" id="recordStatus" required>
+                        <option value="received">Received</option>
+                        <option value="pending">Pending</option>
+                        <option value="processed">Processed</option>
+                        <option value="discrepancy">Discrepancy</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Effective Date <span class="text-red-500">*</span></label>
+                      <input type="date" class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm" id="recordDate" required/>
+                    </div>
+                    <div>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Department <span class="text-red-500">*</span></label>
+                      <select class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm appearance-none" id="department" required>
                         <option value="">Select Department</option>
                       </select>
                     </div>
                     <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Unit</label>
-                      <select class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm appearance-none" id="unit" required>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Category <span class="text-red-500">*</span></label>
+                      <select class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm appearance-none disabled:bg-slate-50 disabled:text-slate-400" id="category" required disabled>
+                        <option value="">Select Category</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Unit <span class="text-red-500">*</span></label>
+                      <select class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm appearance-none" id="unit" required>
                         <option value="">Select Unit</option>
                         <option value="Headquarters">Headquarters</option>
                         <option value="Branch North">Branch North</option>
@@ -168,45 +186,37 @@
                         <option value="Field Ops">Field Ops</option>
                       </select>
                     </div>
-                    <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Category</label>
-                      <select class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm appearance-none disabled:bg-slate-50 disabled:text-slate-400" id="category" required disabled>
-                        <option value="">Select Category</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Effective Date</label>
-                      <input type="date" class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm" id="recordDate" required/>
-                    </div>
                   </div>
                 </div>
 
                 <!-- Card 2: Operational Data -->
                 <div class="bg-white border border-slate-200 rounded-xl shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-                  <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <h3 class="text-sm font-bold text-slate-800 md:col-span-2 mb-1">Operational Metrics</h3>
+                  <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-3">
+                    <h3 class="text-xs font-bold text-slate-800 md:col-span-2 mb-0">Operational Metrics</h3>
                     <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Records Received <span class="text-red-500">*</span></label>
-                      <input type="number" class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm" id="recordsReceived" min="0" required placeholder="0.00"/>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Records Received <span class="text-red-500">*</span></label>
+                      <input type="number" class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm" id="recordsReceived" min="0" required placeholder="0.00"/>
                     </div>
                     <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Records Processed <span class="text-red-500">*</span></label>
-                      <input type="number" class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm" id="recordsProcessed" min="0" required placeholder="0.00"/>
+                      <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Records Processed <span class="text-red-500">*</span></label>
+                      <input type="number" class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm" id="recordsProcessed" min="0" required placeholder="0.00"/>
                     </div>
                   </div>
                 </div>
 
                 <!-- Card 3: Financial & Notes -->
                 <div class="bg-white border border-slate-200 rounded-xl shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-                  <div class="p-6">
-                    <h3 class="text-sm font-bold text-slate-800 mb-6">Financial & Audit Notes</h3>
-                    <div class="mb-6 w-1/2 pr-4">
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Calculated Value ($)</label>
-                      <input type="number" class="w-full h-10 px-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm" id="calculatedValue" step="0.01" placeholder="0.00"/>
-                    </div>
-                    <div>
-                      <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Notes & Justification</label>
-                      <textarea class="w-full p-3 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm min-h-[120px] resize-y" id="notes" placeholder="Enter record descriptions or audit notes..."></textarea>
+                  <div class="p-4">
+                    <h3 class="text-xs font-bold text-slate-800 mb-3">Financial & Audit Notes</h3>
+                    <div class="flex flex-col md:flex-row gap-4 mb-1">
+                      <div class="flex-1">
+                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Calculated Value ($)</label>
+                        <input type="number" class="w-full h-8 px-2 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm" id="calculatedValue" step="0.01" placeholder="0.00"/>
+                      </div>
+                      <div class="flex-[2]">
+                        <label class="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Notes & Justification</label>
+                        <textarea class="w-full h-8 px-2 py-1.5 bg-white border border-slate-200 rounded text-xs text-slate-700 focus:border-primary outline-none shadow-sm min-h-[32px] resize-none overflow-hidden" id="notes" placeholder="Audit notes..." oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                      </div>
                     </div>
                   </div>
                 </div>
